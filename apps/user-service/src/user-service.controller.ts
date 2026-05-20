@@ -23,8 +23,18 @@ export class UserServiceController {
   }
 
   @MessagePattern('Edit_user')
-  edit(id: number, UpdateUserDto: UpdateUserDto) {
-    return this.UserRepository.update({ id }, UpdateUserDto);
+  async edit(id: number, UpdateUserDto: UpdateUserDto): Promise<UserEntity> {
+
+    const doesUserExist = await this.UserRepository.findOne({
+      where : {id},
+    });
+    console.log(doesUserExist);
+    if(!doesUserExist) {
+      throw new Error("l'utilisateur n'existe pas");
+    } 
+    const updateUser = this.UserRepository.merge(doesUserExist, UpdateUserDto);
+    console.log(updateUser);
+    return await this.UserRepository.save(updateUser);
   }
 
   @MessagePattern('Add_user')
