@@ -1,12 +1,48 @@
-import { Controller, Get } from '@nestjs/common';
-import { UserServiceService } from './user-service.service';
+import { Controller } from '@nestjs/common';
+import { MessagePattern } from '@nestjs/microservices';
+import { UserEntity } from './entities/user.entity';
+import { Repository } from 'typeorm';
+import { CreateUserDto, UpdateUserDto } from '@app/shared';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Controller()
 export class UserServiceController {
-  constructor(private readonly userServiceService: UserServiceService) {}
+  constructor(
+    @InjectRepository(UserEntity)
+    private readonly UserRepository: Repository<UserEntity>,
+  ) {}
 
-  @Get()
-  getHello(): string {
-    return this.userServiceService.getHello();
+  @MessagePattern('Browse_user')
+  browse() {
+    return this.UserRepository.find();
+  }
+
+  @MessagePattern('Read_user')
+  read(id: number) {
+    return this.UserRepository.findOneBy({ id });
+  }
+
+  @MessagePattern('Edit_user')
+  edit(id: number, UpdateUserDto: UpdateUserDto) {
+    return this.UserRepository.update({ id }, UpdateUserDto);
+  }
+
+  @MessagePattern('Add_user')
+  async add(CreateUserDto: CreateUserDto): Promise<UserEntity> {
+    const doesUserExist = await this.UserRepository.findOne({
+      where: { email: CreateUserDto.email },
+    });
+
+    if (doesUserExist) {
+      throw new Error("L'email est déja utilisé");
+    }
+
+    const newUser = this.UserRepository.create(CreateUserDto);
+    return await this.UserRepository.save(newUser);
+  }
+
+  @MessagePattern('Destroy_user')
+  destroy(id: number) {
+    return this.UserRepository.delete({ id });
   }
 }
