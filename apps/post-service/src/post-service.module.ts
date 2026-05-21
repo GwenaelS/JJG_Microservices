@@ -11,7 +11,7 @@ import { PostEntity } from './post-entities/post.entities';
         port: 3306,
         username: 'root',
         password: 'root',
-        database: 'microgroupe_db_user',
+        database: 'microgroupe_db_post',
         entities: [PostEntity],
         synchronize: true,
       }),
