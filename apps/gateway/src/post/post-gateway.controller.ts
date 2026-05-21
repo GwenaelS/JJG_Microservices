@@ -45,7 +45,7 @@ export class PostGatewayController {
       @Param('id') id: number, 
       @Body() updatePostDto: UpdatePostDto 
     ) {
-      return this.postClient.send('Edit_user', { 
+      return this.postClient.send('Edit_post', { 
         id: Number(id), 
         updateDto: updatePostDto 
       });

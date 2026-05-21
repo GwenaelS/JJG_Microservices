@@ -28,7 +28,7 @@ export class UserGatewayController {
     return this.userClient.send('Read_user', id);
   }
 
-  // LA ROUTE CORRIGÉE ICI :
+ 
   @Patch('/:id') 
   async updateUser(
     @Param('id') id: number, 

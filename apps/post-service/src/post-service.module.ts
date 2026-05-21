@@ -1,10 +1,23 @@
 import { Module } from '@nestjs/common';
 import { PostServiceController } from './post-service.controller';
-import { PostServiceService } from './post-service.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { PostEntity } from './post-entities/post.entities';
 
 @Module({
-  imports: [],
+  imports: [
+  TypeOrmModule.forRoot({
+        type: 'mysql',
+        host: 'localhost',
+        port: 3306,
+        username: 'root',
+        password: 'root',
+        database: 'microgroupe_db_user',
+        entities: [PostEntity],
+        synchronize: true,
+      }),
+      TypeOrmModule.forFeature([PostEntity]),
+    ],
   controllers: [PostServiceController],
-  providers: [PostServiceService],
+  providers: [],
 })
 export class PostServiceModule {}
