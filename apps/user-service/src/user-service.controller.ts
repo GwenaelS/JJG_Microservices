@@ -4,6 +4,7 @@ import { UserEntity } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { CreateUserDto, UpdateUserDto } from '@app/shared';
 import { InjectRepository } from '@nestjs/typeorm';
+import { RpcException } from '@nestjs/microservices';
 
 @Controller()
 export class UserServiceController {
@@ -23,19 +24,31 @@ export class UserServiceController {
   }
 
   @MessagePattern('Edit_user')
-  async edit(id: number, UpdateUserDto: UpdateUserDto): Promise<UserEntity> {
+async edit(payload: { id: number; updateDto: UpdateUserDto }): Promise<UserEntity> {
+  
+  // 1. On extrait proprement l'id et le DTO du payload reçu
+  const { id, updateDto } = payload;
 
-    const doesUserExist = await this.UserRepository.findOne({
-      where : {id},
-    });
-    console.log(doesUserExist);
-    if(!doesUserExist) {
-      throw new Error("l'utilisateur n'existe pas");
-    } 
-    const updateUser = this.UserRepository.merge(doesUserExist, UpdateUserDto);
-    console.log(updateUser);
-    return await this.UserRepository.save(updateUser);
+  console.log('ID extrait :', id);         // Devrait afficher: 12
+  console.log('Data extraite :', updateDto); // Devrait afficher: { name: 'tota' }
+
+  if (!id) {
+    throw new RpcException("L'ID de l'utilisateur est manquant dans le payload");
   }
+
+  // 2. Recherche en base de données
+  const doesUserExist = await this.UserRepository.findOne({
+    where: { id: Number(id) },
+  });
+
+  if (!doesUserExist) {
+    throw new RpcException("L'utilisateur n'existe pas en base de données");
+  } 
+
+  // 3. Fusion et sauvegarde
+  const updateUser = this.UserRepository.merge(doesUserExist, updateDto);
+  return await this.UserRepository.save(updateUser);
+}
 
   @MessagePattern('Add_user')
   async add(CreateUserDto: CreateUserDto): Promise<UserEntity> {

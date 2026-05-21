@@ -18,46 +18,33 @@ export class UserGatewayController {
     @Inject('USER_SERVICE') private readonly userClient: ClientProxy,
   ) {}
 
-  /**
-   * BROWSE (Obtenir tous les utilisateurs)
-   * Route HTTP: GET /users
-   */
   @Get()
   browseUser() {
     return this.userClient.send('Browse_user', {});
   }
 
-  /**
-   * READ (Obtenir tous les utilisateurs)
-   * Route HTTP: GET /users/:id
-   */
   @Get('/:id')
   readUser(@Param('id') id: string) {
     return this.userClient.send('Read_user', id);
   }
 
-  /**
-   * EDIT (Obtenir tous les utilisateurs)
-   * Route HTTP: GET /users/:id
-   */
-  @Patch('/:id')
-  editUser(@Param('id') id: string, @Body() UpdateUserDto: UpdateUserDto) {
-    return this.userClient.send('Edit_user', UpdateUserDto);
+  // LA ROUTE CORRIGÉE ICI :
+  @Patch('/:id') 
+  async updateUser(
+    @Param('id') id: number, 
+    @Body() updateUserDto: UpdateUserDto 
+  ) {
+    return this.userClient.send('Edit_user', { 
+      id: Number(id), 
+      updateDto: updateUserDto 
+    });
   }
 
-  /**
-   * ADD (Obtenir tous les utilisateurs)
-   * Route HTTP: GET /users
-   */
   @Post()
   addUser(@Body() CreateUserDto: CreateUserDto) {
     return this.userClient.send('Add_user', CreateUserDto);
   }
 
-  /**
-   * DESTROY (Obtenir tous les utilisateurs)
-   * Route HTTP: GET /users/:id
-   */
   @Delete('/:id')
   destroyUser(@Param('id') id: string) {
     return this.userClient.send('Destroy_user', id);

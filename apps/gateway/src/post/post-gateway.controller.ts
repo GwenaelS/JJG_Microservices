@@ -40,10 +40,16 @@ export class PostGatewayController {
    * EDIT (Obtenir tous les articles)
    * Route HTTP: GET /users/:id
    */
-  @Patch('/:id')
-  editPost(@Param('id') id: string, @Body() UpdatePostDto: UpdatePostDto) {
-    return this.postClient.send('Edit_post', UpdatePostDto);
-  }
+  @Patch('/:id') 
+    async updatePost(
+      @Param('id') id: number, 
+      @Body() updatePostDto: UpdatePostDto 
+    ) {
+      return this.postClient.send('Edit_user', { 
+        id: Number(id), 
+        updateDto: updatePostDto 
+      });
+    }
 
   /**
    * ADD (Obtenir tous les articles)
