@@ -5,7 +5,7 @@ export class PostEntity {
   constructor(id: number, title: string, content: string, authorId: number) {
     this.id = id;
     this.title = title;
-    this.content =content;
+    this.content = content;
     this.authorId = authorId;
   }
 
@@ -15,7 +15,7 @@ export class PostEntity {
   @Column()
   title: string;
 
-  @Column({ unique: true })
+  @Column()
   content: string;
 
   @Column()
