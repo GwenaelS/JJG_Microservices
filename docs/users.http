@@ -1,0 +1,74 @@
+### REST Client - User Service Tests
+### Gateway runs on http://localhost:3000
+
+@baseUrl = http://localhost:3000
+@userIdCreated = 1
+
+### ============================================
+### 1. GET ALL USERS (Browse)
+### ============================================
+GET {{baseUrl}}/users
+Content-Type: application/json
+
+
+### ============================================
+### 2. CREATE A NEW USER (Add)
+### ============================================
+POST {{baseUrl}}/users
+Content-Type: application/json
+
+{
+  "name": "John Dosessss",
+  "email": "johnsssss@example.com",
+  "password": "securePassword123"
+}
+
+
+### ============================================
+### 3. CREATE SECOND USER
+### ============================================
+POST {{baseUrl}}/users
+Content-Type: application/json
+
+{
+  "name": "Jane Smiths",
+  "email": "janes@example.com",
+  "password": "securePassword456"
+}
+
+
+### ============================================
+### 4. GET USER BY ID (Read)
+### Test with ID 1 (adjust if needed)
+### ============================================
+GET {{baseUrl}}/users/1
+Content-Type: application/json
+
+
+### ============================================
+### 5. UPDATE USER (Edit)
+### Updates user with ID 1
+### ============================================
+PATCH {{baseUrl}}/users/1
+Content-Type: application/json
+
+{
+  "name": "John Updated",
+  "email": "john.updated@example.com"
+}
+
+
+### ============================================
+### 6. DELETE USER
+### Deletes user with ID 2
+### ============================================
+DELETE {{baseUrl}}/users/2
+Content-Type: application/json
+
+
+### ============================================
+### 7. GET ALL USERS AFTER OPERATIONS
+### Verify the changes
+### ============================================
+GET {{baseUrl}}/users
+Content-Type: application/json
