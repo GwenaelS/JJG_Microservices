@@ -2,9 +2,13 @@ import { Module } from '@nestjs/common';
 import { UserServiceController } from './user-service.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserEntity } from './entities/user.entity';
+import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
   imports: [
+    CacheModule.register({
+      ttl: 50000, // 50 secondes
+    }),
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: 'localhost',
