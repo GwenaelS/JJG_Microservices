@@ -1,0 +1,77 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  backend-ci:
+    name: Backend CI
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [24, 25]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: ./backend
+
+      - name: Lint
+        run: npm run lint
+        continue-on-error: true
+        working-directory: ./backend
+
+      - name: Test
+        run: npm run test
+        working-directory: ./backend
+
+      - name: Build
+        run: npm run build
+        working-directory: ./backend
+
+  frontend-ci:
+    name: Frontend CI
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [24, 25]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+          cache-dependency-path: frontend/pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install
+        working-directory: ./frontend
+
+      - name: Lint
+        run: pnpm run lint
+        continue-on-error: true
+        working-directory: ./frontend
+
+      - name: Build
+        run: pnpm run build
+        working-directory: ./frontend
