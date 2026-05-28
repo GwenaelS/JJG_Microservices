@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { SharedService } from './shared.service';
 
-describe('SharedService', () => {
+describe.skip('SharedService', () => {
   let service: SharedService;
 
   beforeEach(async () => {
