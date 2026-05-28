@@ -3,7 +3,6 @@ import { UserServiceController } from './user-service.controller';
 import { UserServiceService } from './user-service.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { UserEntity } from './entities/user.entity';
-import { find } from 'rxjs';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 
 describe('User - ServiceController', () => {
